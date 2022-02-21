@@ -12,6 +12,8 @@ const
 
 function GeneratePrivateKey(L: LongInt): String;
 function GenerateLicenseKey(Data: String; PrivateKey: String): String;
+function Encrypt(Data: String; PrivateKey: String): String;
+function Decrypt(Data: String; PrivateKey: String): String;
 
 implementation
 
@@ -31,7 +33,7 @@ begin
   Result := r;
 end;
 
-function GenerateLicenseKey(Data: String; PrivateKey: String): String;
+function Encrypt(Data: String; PrivateKey: String): String;
 var
   C, P, Key, EncryptedData, LicenseKey: String;
   I, Pos1, Pos2, Pos3, Z, SrcLen, AKLen: Integer;
@@ -62,13 +64,34 @@ begin
     Pos3 := ((Pos1 + Pos2) Mod AKLen);
 
     if (Pos1 > 0 = true) and (Pos2 > 0 = true) and (Pos3 > 0 = true) then
-         EncryptedData+=AlphaKeys[Pos3];
+         EncryptedData += AlphaKeys[Pos3];
 
     Z:=Z + 1;
   // end for
   end;
 
+  Result:= EncryptedData;
+end;
+
+function Decrypt(Data: String; PrivateKey: String): String;
+var
+  CleanData: String;
+begin
+  CleanData := Data.Replace('-', '');
+  Result:=CleanData;
+end;
+
+function GenerateLicenseKey(Data: String; PrivateKey: String): String;
+var
+  EncryptedData, LicenseKey: String;
+  I, SrcLen: Integer;
+begin
+  EncryptedData:='';
+  LicenseKey:='';
   I:=1;
+
+  EncryptedData:=Encrypt(Data, PrivateKey);
+
   SrcLen:= Length(EncryptedData);
   // now we split the encrypted data
   while I <= srcLen do

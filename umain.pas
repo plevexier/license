@@ -58,7 +58,7 @@ begin
     EditLicense.Caption:='';
 
     Data:= uppercase(EditApp.Caption + '/' + EditAppVersion.Caption);
-    LicenseKey:=GenerateLicenseKey(data, PrivateKey);
+    LicenseKey:=Encrypt(data, PrivateKey);
     EditLicense.Caption:=LicenseKey;
 //end proc
 end;
@@ -85,9 +85,8 @@ begin
     LicenseKey:='';
     EditCheckLicense.Caption:='';
 
-    Data:= uppercase(EditApp.Caption + '/' + EditAppVersion.Caption);
-    LicenseKey:=GenerateLicenseKey(data, PrivateKey);
-    EditCheckLicense.Caption:=LicenseKey;
+    Data:= Decrypt(EditLicense.Caption, PrivateKey);
+    EditCheckLicense.Caption:=Data;
 //end proc
 end;
 
