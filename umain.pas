@@ -12,17 +12,15 @@ type
     { TForm1 }
 
     TForm1 = class(TForm)
-					ButtonCheck: TButton;
+        ButtonCheck: TButton;
         ButtonGenPrivKey: TButton;
         ButtonGenerate: TButton;
 				EditCheckLicense: TEdit;
-                EditLicense1: TEdit;
+        EditLicense1: TEdit;
         EditPrivateKey: TEdit;
-        EditAppVersion: TEdit;
         EditApp: TEdit;
         EditLicense: TEdit;
         Label2: TLabel;
-        Label3: TLabel;
         Label4: TLabel;
 		procedure ButtonCheckClick(Sender: TObject);
         procedure FormCreate(Sender: TObject);
@@ -50,39 +48,34 @@ implementation
 //https://www.openssl.org/docs/man3.0/man3/RSA_generate_key_ex.html
 procedure TForm1.ButtonGenerateClick(Sender: TObject);
 var
-    Data: String;
-    LicenseKey: String;
+    Data, EncryptedString: String;
 begin
     Data:='';
-    LicenseKey:='';
+    EncryptedString:='';
     EditLicense.Caption:='';
 
-    Data:= uppercase(EditApp.Caption + '/' + EditAppVersion.Caption);
-    LicenseKey:=Encrypt(data, PrivateKey);
-    EditLicense.Caption:=LicenseKey;
+    Data:= EditApp.Caption;
+    EncryptedString:=Encrypt(Data, PrivateKey);
+    EditLicense.Caption:=EncryptedString;
 //end proc
 end;
 
 procedure TForm1.ButtonGenPrivKeyClick(Sender: TObject);
 begin
     PrivateKey:='';
-    PrivateKey:=GeneratePrivateKey(32);
+    PrivateKey:=GeneratePrivateKey(16);
     EditPrivateKey.Caption := PrivateKey;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-    PrivateKey:='1230A6701B12cc39QasRT8775';
-    EditPrivateKey.Caption:=PrivateKey;
 end;
 
 procedure TForm1.ButtonCheckClick(Sender: TObject);
 var
     Data: String;
-    LicenseKey: String;
 begin
     Data:='';
-    LicenseKey:='';
     EditCheckLicense.Caption:='';
 
     Data:= Decrypt(EditLicense.Caption, PrivateKey);

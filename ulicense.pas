@@ -5,10 +5,10 @@ unit ulicense;
 interface
 
 uses
-    Classes, SysUtils, md5, math;
+    Classes, SysUtils, blowfish, base64, math;
 
 const
-  AlphaKeys : String = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  AlphaKeys : String = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz;0123456789';
 
 function GeneratePrivateKey(L: LongInt): String;
 
@@ -35,50 +35,26 @@ end;
 
 function Encrypt(Data: String; PrivateKey: String): String;
 var
-  C, P, Key, EncryptedData, LicenseKey: String;
-  I, Pos1, Pos2, Pos3, Z, SrcLen, AKLen: Integer;
+  Enc: TBlowFishEncryptStream;
+  S1,S2: TStringStream;
 begin
-  C:='';
-  P:='';
-  Key:='';
-  EncryptedData:='';
-  LicenseKey:='';
-  I:=0;
-  Pos1:=0;
-  Pos2:=0;
-  Pos3:=0;
-  Z:=0;
-  SrcLen:= 0;
-  AKLen:= Length(AlphaKeys);
+  S1:=TStringStream.Create(Data);
+  S2:=TStringStream.Create('');
+  Enc:=TBlowfishEncryptStream.Create(PrivateKey, s2);
+  Enc.WriteAnsiString(Data);
+  Enc.free;
 
-  Key:=Uppercase(MD5Print(MD5String(Data)));
-
-  SrcLen:= Length(Key);
-  Z := 0;
-  For I:= 0 to SrcLen - 1 do
-  begin
-    C := Key[I + 1];
-    Pos1 := AlphaKeys.IndexOf(C) + 1;
-    P := PrivateKey[Z + 1];
-    Pos2 := AlphaKeys.IndexOf(P) + 1;
-    Pos3 := ((Pos1 + Pos2) Mod AKLen);
-
-    if (Pos1 > 0 = true) and (Pos2 > 0 = true) and (Pos3 > 0 = true) then
-         EncryptedData += AlphaKeys[Pos3];
-
-    Z:=Z + 1;
-  // end for
-  end;
-
-  Result:= EncryptedData;
+  result:=EncodeStringBase64(S2.datastring);
 end;
 
 function Decrypt(Data: String; PrivateKey: String): String;
 var
-  CleanData: String;
+  Dec: TBlowFishDeCryptStream;
+  S1,S2: TStringStream;
 begin
-  CleanData := Data.Replace('-', '');
-  Result:=CleanData;
+  S1 := TStringStream.Create(DecodeStringBase64(Data));
+  Dec := TBlowFishDeCryptStream.Create(PrivateKey,S1);
+  Result:=Dec.ReadAnsiString;
 end;
 
 // end unit
