@@ -5,7 +5,7 @@ unit ulicense;
 interface
 
 uses
-    Classes, SysUtils, md5, math, lazlogger;
+    Classes, SysUtils, md5, math;
 
 const
   AlphaKeys : String = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -34,7 +34,7 @@ end;
 function GenerateLicenseKey(Data: String; PrivateKey: String): String;
 var
   C, P, Key, EncryptedData, LicenseKey: String;
-  I, Pos1, Pos2, Pos3, Z, SrcLen: Integer;
+  I, Pos1, Pos2, Pos3, Z, SrcLen, AKLen: Integer;
 begin
   C:='';
   P:='';
@@ -47,9 +47,9 @@ begin
   Pos3:=0;
   Z:=0;
   SrcLen:= 0;
+  AKLen:= Length(AlphaKeys);
 
   Key:=Uppercase(MD5Print(MD5String(Data)));
-  DebugLn('MD5=' + Key);
 
   SrcLen:= Length(Key);
   Z := 0;
@@ -59,10 +59,10 @@ begin
     Pos1 := AlphaKeys.IndexOf(C) + 1;
     P := PrivateKey[Z + 1];
     Pos2 := AlphaKeys.IndexOf(P) + 1;
-    Pos3 := ((Pos1 + Pos2) Mod Length(AlphaKeys)) - 1;
+    Pos3 := ((Pos1 + Pos2) Mod AKLen);
 
-    if (Pos1 > -1 = true) and (Pos2 > -1 = true) and (Pos3 > -1 = true) then
-       EncryptedData:= EncryptedData + AlphaKeys[Pos3 + 1];
+    if (Pos1 > 0 = true) and (Pos2 > 0 = true) and (Pos3 > 0 = true) then
+         EncryptedData+=AlphaKeys[Pos3];
 
     Z:=Z + 1;
   // end for

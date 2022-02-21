@@ -5,8 +5,7 @@ unit umain;
 interface
 
 uses
-    Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ulicense,
-    lazlogger;
+    Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, ulicense;
 
 type
 
@@ -17,16 +16,15 @@ type
         ButtonGenPrivKey: TButton;
         ButtonGenerate: TButton;
 				EditCheckLicense: TEdit;
+                EditLicense1: TEdit;
         EditPrivateKey: TEdit;
         EditAppVersion: TEdit;
         EditApp: TEdit;
-        EditInfo: TEdit;
         EditLicense: TEdit;
-        Label1: TLabel;
         Label2: TLabel;
         Label3: TLabel;
         Label4: TLabel;
-				procedure ButtonCheckClick(Sender: TObject);
+		procedure ButtonCheckClick(Sender: TObject);
         procedure FormCreate(Sender: TObject);
         procedure ButtonGenerateClick(Sender: TObject);
         procedure ButtonGenPrivKeyClick(Sender: TObject);
@@ -59,7 +57,7 @@ begin
     LicenseKey:='';
     EditLicense.Caption:='';
 
-    Data:= uppercase(EditInfo.Caption + EditApp.Caption + EditAppVersion.Caption);
+    Data:= uppercase(EditApp.Caption + '/' + EditAppVersion.Caption);
     LicenseKey:=GenerateLicenseKey(data, PrivateKey);
     EditLicense.Caption:=LicenseKey;
 //end proc
@@ -68,13 +66,13 @@ end;
 procedure TForm1.ButtonGenPrivKeyClick(Sender: TObject);
 begin
     PrivateKey:='';
-    PrivateKey:=GeneratePrivateKey(16);
+    PrivateKey:=GeneratePrivateKey(32);
     EditPrivateKey.Caption := PrivateKey;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-    PrivateKey:='1230A6701B12cc39';
+    PrivateKey:='1230A6701B12cc39QasRT8775';
     EditPrivateKey.Caption:=PrivateKey;
 end;
 
@@ -87,7 +85,7 @@ begin
     LicenseKey:='';
     EditCheckLicense.Caption:='';
 
-    Data:= uppercase(EditInfo.Caption + EditApp.Caption + EditAppVersion.Caption);
+    Data:= uppercase(EditApp.Caption + '/' + EditAppVersion.Caption);
     LicenseKey:=GenerateLicenseKey(data, PrivateKey);
     EditCheckLicense.Caption:=LicenseKey;
 //end proc
