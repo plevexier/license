@@ -11,7 +11,7 @@ const
   AlphaKeys : String = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
 function GeneratePrivateKey(L: LongInt): String;
-function GenerateLicenseKey(Data: String; PrivateKey: String): String;
+
 function Encrypt(Data: String; PrivateKey: String): String;
 function Decrypt(Data: String; PrivateKey: String): String;
 
@@ -79,34 +79,6 @@ var
 begin
   CleanData := Data.Replace('-', '');
   Result:=CleanData;
-end;
-
-function GenerateLicenseKey(Data: String; PrivateKey: String): String;
-var
-  EncryptedData, LicenseKey: String;
-  I, SrcLen: Integer;
-begin
-  EncryptedData:='';
-  LicenseKey:='';
-  I:=1;
-
-  EncryptedData:=Encrypt(Data, PrivateKey);
-
-  SrcLen:= Length(EncryptedData);
-  // now we split the encrypted data
-  while I <= srcLen do
-  begin
-    if SrcLen - I >= 5 then
-       begin
-         LicenseKey += uppercase(Copy(EncryptedData, I, 5));
-         if SrcLen - I >= 10 then
-            LicenseKey += '-';
-			 end;
-    Inc(I, 5);
-	end;
-
-  Result:=LicenseKey;
-//end function
 end;
 
 // end unit
