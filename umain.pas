@@ -12,19 +12,18 @@ type
     { TForm1 }
 
     TForm1 = class(TForm)
-        ButtonCheck: TButton;
         ButtonGenPrivKey: TButton;
-        ButtonGenerate: TButton;
-				EditCheckLicense: TEdit;
+        ButtonGenerateSerials: TButton;
+				EditNumberSerial: TEdit;
         EditLicense1: TEdit;
         EditPrivateKey: TEdit;
         EditApp: TEdit;
-        EditLicense: TEdit;
+				Label1: TLabel;
         Label2: TLabel;
         Label4: TLabel;
-		procedure ButtonCheckClick(Sender: TObject);
+				MemoKeyList: TMemo;
         procedure FormCreate(Sender: TObject);
-        procedure ButtonGenerateClick(Sender: TObject);
+        procedure ButtonGenerateSerialsClick(Sender: TObject);
         procedure ButtonGenPrivKeyClick(Sender: TObject);
     const
         Private_Key_Length : int8 = 16;
@@ -46,41 +45,41 @@ implementation
 
 // https://stackoverflow.com/questions/55229772/using-openssl-to-generate-keypairs/55239810#55239810
 //https://www.openssl.org/docs/man3.0/man3/RSA_generate_key_ex.html
-procedure TForm1.ButtonGenerateClick(Sender: TObject);
+procedure TForm1.ButtonGenerateSerialsClick(Sender: TObject);
 var
-    Data, EncryptedString: String;
+    Data, Clear, EncryptedString: String;
+    I: Integer;
 begin
+    MemoKeyList.Clear;
     Data:='';
+    Clear:='';
+    I:= 0;
     EncryptedString:='';
-    EditLicense.Caption:='';
 
-    Data:= EditApp.Caption;
-    EncryptedString:=Encrypt(Data, PrivateKey);
-    EditLicense.Caption:=EncryptedString;
+    For I:=1 to StrToInt(EditNumberSerial.Caption) do
+    begin
+      Data:= EditApp.Caption + ';' + IntToStr(I);
+      EncryptedString:=Encrypt(Data, PrivateKey);
+
+      // test
+      Clear:=Decrypt(EncryptedString, PrivateKey);
+      if Clear = EditApp.Caption + ';' + IntToStr(I) then
+         MemoKeyList.Append(EncryptedString);
+		end;
+
+
 //end proc
 end;
 
 procedure TForm1.ButtonGenPrivKeyClick(Sender: TObject);
 begin
     PrivateKey:='';
-    PrivateKey:=GeneratePrivateKey(16);
+    PrivateKey:=GeneratePrivateKey(32);
     EditPrivateKey.Caption := PrivateKey;
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-end;
-
-procedure TForm1.ButtonCheckClick(Sender: TObject);
-var
-    Data: String;
-begin
-    Data:='';
-    EditCheckLicense.Caption:='';
-
-    Data:= Decrypt(EditLicense.Caption, PrivateKey);
-    EditCheckLicense.Caption:=Data;
-//end proc
 end;
 
 end.
